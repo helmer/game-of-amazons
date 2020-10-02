@@ -1,44 +1,30 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Game
+https://game-of-amazons.vercel.app/
 
-## Available Scripts
+## Background
+Some 14 years ago I had a small breakdown in the university. Game Theory, one of the best lectures I ever took, proposed a challenge - implement an AI winning 3 matches out of 5 against the AI written by professor Jan Willemson.
+I put a lot of effort into this "intelligence", attempting to apply Minimax parallelized across four 3GHz processors, only to fail 0 vs 5.
+I was one of the few failures, most likely because I had no idea what I was doing leading to my dad (who is also a Game Theory boss)
+expelling me from the university (last part is only half true).
 
-In the project directory, you can run:
 
-### `npm start`
+The game itself is great - https://en.wikipedia.org/wiki/Game_of_the_Amazons.
+For example, GOA has 2176 possible moves on turn one, compared to 20 in Chess.
+It is still infinitely simpler than Chess, the possibilities reduce exponentially going forward.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+The rules are simple - every piece moves like a queen in chess.
+Your turn consists of two actions - move queen, shoot arrow (also like a queen).
+Where the arrow lands, tile becomes unusable until the end of game. First one to run out of moves loses.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Fast forward this spring, I am applying for a job where they want to test my ReactJS skills.
+"No problem, I have done ReactJS for the past 2 years, I can handle this".
+I did real bad actually, and as a result wanted to spice up my skills by implementing something in React.
+What? Why not the challenge I failed in the university. (One of two actually, the other was "implement a filesystem",
+is a bit too much asked from 21 year olds, don't you think University of Tartu cc @jaak.vilo?!)
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Anyway, hacked together the game in React, with two difficulty levels - RANDOM and SMART.
+Most of my friends cannot beat SMART, but my daughter wins RANDOM about 60% of times. Pretty sure Jan is still better
+than SMART. But, what about YOU!
