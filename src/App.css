@@ -1,0 +1,65 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 1vw;
+  font-family: Verdana;
+}
+
+.tile {
+  border: 1px solid black;
+  display: inline-block;
+  width: 8vmin;
+  height: 8vmin;
+  text-align: center;
+  vertical-align: top;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.tileValid {
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: 0 0 2px 1px #000;
+}
+.tileEven {
+  background-color: #FFCE9E;
+}
+.tileOdd {
+  background-color: #D18B47;
+}
+.tileSelected {
+  border: 0.3vmin solid #55D;
+  opacity: 1;
+}
+
+.tile::before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: '\00A0';
+  background-repeat: no-repeat;
+  background-size: 70%;
+  background-position: center;
+}
+
+.tileWhiteQueen::before {
+  background-image: url(/white_queen.png);
+}
+.tileWhiteBow::before {
+  background-image: url(/white_bow.png);
+}
+.tileWhiteArrow::before {
+  background-image: url(/white_arrow.png);
+}
+
+.tileBlackQueen::before {
+  background-image: url(/black_queen.png);
+}
+.tileBlackBow::before {
+  background-image: url(/black_bow.png);
+}
+.tileBlackArrow::before {
+  background-image: url(/black_arrow.png);
+}
