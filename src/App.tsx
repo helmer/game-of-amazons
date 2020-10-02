@@ -52,19 +52,15 @@ let blackComputer: Computer | null = createAI(defaultBlackComputer, tiles);;
 
 interface ComputerSelectorProps {
     defaultValue: ComputerSmartness;
-    label: string;
     onChange: (smartness: ComputerSmartness) => void;
 }
 
 const ComputerSelector: React.FC<ComputerSelectorProps> = (props: ComputerSelectorProps) => (
-    <div>
-        <span>{props.label}</span>
-        <select defaultValue={props.defaultValue} onChange={ e => props.onChange(e.target.value as ComputerSmartness) }>
-            <option>{ComputerSmartness.NONE}</option>
-            <option>{ComputerSmartness.RANDOM}</option>
-            <option>{ComputerSmartness.SMART}</option>
-        </select>
-    </div>
+    <select defaultValue={props.defaultValue} onChange={ e => props.onChange(e.target.value as ComputerSmartness) }>
+        <option>{ComputerSmartness.NONE}</option>
+        <option>{ComputerSmartness.RANDOM}</option>
+        <option>{ComputerSmartness.SMART}</option>
+    </select>
 );
 
 const App: React.FC = () => {
@@ -106,13 +102,28 @@ const App: React.FC = () => {
 
     return <>
         <h1>Game of the Amazons</h1>
-        <div>
-            <input type="text" placeholder="AI delay (default: 1000)" ref={delayInput} />
-            <button onClick={changeDelay}>Change delay</button>
-        </div>
-        <ComputerSelector label='White AI' defaultValue={whiteComputerStr} onChange={ changeWhiteComputer } />
-        <ComputerSelector label='Black AI' defaultValue={blackComputerStr} onChange={ changeBlackComputer } />
-        <button onClick={restartGame}>Restart</button>
+
+        <table>
+            <tr>
+                <td>Computer delay</td>
+                <td><input type="text" placeholder="1000" ref={delayInput} /></td>
+                <td><button onClick={changeDelay}>Change delay</button></td>
+            </tr>
+            <tr>
+                <td>White AI</td>
+                <td colSpan={2}><ComputerSelector defaultValue={whiteComputerStr} onChange={changeWhiteComputer} /></td>
+            </tr>
+            <tr>
+                <td>Black AI</td>
+                <td colSpan={2}><ComputerSelector defaultValue={blackComputerStr} onChange={changeBlackComputer} /></td>
+            </tr>
+            <tr>
+                <td colSpan={3}>
+                    <button onClick={restartGame}>Restart</button>
+                </td>
+            </tr>
+        </table>
+
         <Board blackComputer={blackComputer} whiteComputer={whiteComputer} computerDelay={delay} key={gameNumber} />
     </>;
 }

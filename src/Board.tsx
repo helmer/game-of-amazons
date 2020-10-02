@@ -214,8 +214,7 @@ class Board extends React.Component<BoardProps, BoardState> {
 
     render() {
         return <>
-            <div>Current step: { this.state.gameStep }</div>
-            <div>AI delay: { this.props.computerDelay }</div>
+            <div style={{margin:'15px 0 5px 0', color: 'gray', fontWeight: 700, fontStyle:'italic'}}>Current step: { this.state.gameStep }</div>
             { tiles.map((row: Array<BoardTileState>, y) => (
                 <div key={y}>
                     {row.map((s, x) => {
