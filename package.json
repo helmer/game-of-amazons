@@ -11,7 +11,11 @@
     "react-scripts": "3.3.0",
     "typescript": "^3.9.7"
   },
+  "devDependencies": {
+    "serve": "^11.3.2"
+  },
   "scripts": {
+    "serve": "serve -s build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
