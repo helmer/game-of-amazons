@@ -142,6 +142,10 @@ label {
   background-image: url(/black_arrow.png);
 }
 
+.buttonsAndLinks {
+  display: flex;
+  flex-direction: column;
+}
 
 .gameStepContainer {
   display: flex;
@@ -205,6 +209,7 @@ label {
   padding: 0.5rem 0;
   border-top: 1px dashed gray;
   border-bottom: 1px dashed gray;
+  flex-grow: 1;
 }
 .configuration table {
   font-size: 0.6em;

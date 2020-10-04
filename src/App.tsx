@@ -124,7 +124,7 @@ const App: React.FC = () => {
             key={gameNumber}
         />
 
-        <div>
+        <div className='buttonsAndLinks'>
             <Toolbar onRestartClick={restartGame} gameStep={gameStep}/>
             <Configuration
                 whiteAI={<ComputerSelector pfx='white' defaultValue={whiteComputerStr} onChange={changeWhiteComputer}/>}
