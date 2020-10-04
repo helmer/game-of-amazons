@@ -31,7 +31,7 @@ enum ComputerSmartness {
     NONE = 'NONE',
     RANDOM = 'RANDOM',
     SMART = 'SMART'
-};
+}
 
 const createAI = (smartness: ComputerSmartness, tiles: BoardTiles) => {
     switch (smartness) {
