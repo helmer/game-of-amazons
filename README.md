@@ -3,7 +3,7 @@ https://game-of-amazons.vercel.app/
 
 ## Background
 Some 14 years ago I had a small breakdown in the university. Game Theory, one of the best lectures I ever took, proposed a challenge - implement an AI winning 3 matches out of 5 against the AI written by professor Jan Willemson.
-I put a lot of effort into this "intelligence", attempting to apply Minimax parallelized across four 3GHz processors, only to fail 0 vs 5.
+I put a lot of effort into this "intelligence", attempting to apply Minimax parallelized across four 3GHz cores, only to fail 0 vs 5.
 I was one of the few failures, most likely because I had no idea what I was doing leading to my dad (who is also a Game Theory boss)
 expelling me from the university (last part is only half true).
 
