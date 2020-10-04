@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
 import './App.css';
-import { Board, BoardTiles } from './Board';
+import {Board, BoardTiles, GameStep} from './Board';
 import { Computer } from './computer/ComputerUtils';
 import { BoardTileState } from './Tile';
 import { Random as RandomComputer } from './computer/Random';
 import { Smart as SmartComputer } from './computer/Smart';
+import { Heading } from './Heading';
+import { Toolbar } from './Toolbar';
 
 const buildBoard = (
     blacks: Array<[number, number]> = [[0, 3], [0, 6], [3, 0], [3, 9]],
@@ -33,7 +35,7 @@ enum ComputerSmartness {
     SMART = 'SMART'
 }
 
-const createAI = (smartness: ComputerSmartness, tiles: BoardTiles) => {
+const createAI = (smartness: ComputerSmartness) => {
     switch (smartness) {
         case ComputerSmartness.NONE:   return null;
         case ComputerSmartness.RANDOM: return RandomComputer();
@@ -43,12 +45,12 @@ const createAI = (smartness: ComputerSmartness, tiles: BoardTiles) => {
 
 let tiles = buildBoard();
 
-const defaultDelay = 1000;
+const defaultDelay = 500;
 const defaultWhiteComputer = ComputerSmartness.NONE;
 const defaultBlackComputer = ComputerSmartness.SMART;
 
-let whiteComputer: Computer | null = createAI(defaultWhiteComputer, tiles);
-let blackComputer: Computer | null = createAI(defaultBlackComputer, tiles);;
+let whiteComputer: Computer | null = createAI(defaultWhiteComputer);
+let blackComputer: Computer | null = createAI(defaultBlackComputer);
 
 interface ComputerSelectorProps {
     defaultValue: ComputerSmartness;
@@ -66,67 +68,53 @@ const ComputerSelector: React.FC<ComputerSelectorProps> = (props: ComputerSelect
 const App: React.FC = () => {
     const [delay, setDelay] = useState(defaultDelay);
     const [gameNumber, restart] = useState(1);
+    const [gameStep, gameStepChange] = useState(GameStep.WHITE_TO_SELECT_QUEEN);
 
     const [whiteComputerStr, setWhiteComputer] = useState<ComputerSmartness>(defaultWhiteComputer);
     const [blackComputerStr, setBlackComputer] = useState<ComputerSmartness>(defaultBlackComputer);
 
-    let delayInput: React.RefObject<HTMLInputElement> = React.createRef();
-
-    const changeDelay = () => {
-        if (delayInput.current) {
-            if (delayInput.current.value === '' || isNaN(Number(delayInput.current.value))) {
-                setDelay(defaultDelay);
-            } else {
-                setDelay(Number(delayInput.current.value));
-            }
-        }
-    }
-
     const changeWhiteComputer = (smartness: ComputerSmartness) => {
-        whiteComputer = createAI(smartness, tiles);
+        whiteComputer = createAI(smartness);
         setWhiteComputer(smartness);
     }
 
     const changeBlackComputer = (smartness: ComputerSmartness) => {
-        blackComputer = createAI(smartness, tiles);
+        blackComputer = createAI(smartness);
         setBlackComputer(smartness);
     }
 
     const restartGame = () => {
-        console.clear();
         tiles = buildBoard();
-        whiteComputer = createAI(whiteComputerStr, tiles);
-        blackComputer = createAI(blackComputerStr, tiles)
+        whiteComputer = createAI(whiteComputerStr);
+        blackComputer = createAI(blackComputerStr)
+        gameStepChange(GameStep.WHITE_TO_SELECT_QUEEN);
         restart(gameNumber + 1);
     }
 
+    const fullScreen = () => {
+        const bodyClasses = document.getElementsByTagName('body')[0].classList;
+        bodyClasses[bodyClasses.contains('fullScreen') ? 'remove' : 'add']('fullScreen');
+    }
+
     return <>
-        <h1>Game of the Amazons</h1>
+        <Heading
+            whiteAI={<ComputerSelector defaultValue={whiteComputerStr} onChange={changeWhiteComputer}/>}
+            blackAI={<ComputerSelector defaultValue={blackComputerStr} onChange={changeBlackComputer}/>}
+            defaultDelay={defaultDelay}
+            onDelayChange={setDelay}
+        />
 
-        <table>
-            <tbody>
-                <tr>
-                    <td>Computer delay</td>
-                    <td><input type="text" placeholder="1000" ref={delayInput} /></td>
-                    <td><button onClick={changeDelay}>Change delay</button></td>
-                </tr>
-                <tr>
-                    <td>White AI</td>
-                    <td colSpan={2}><ComputerSelector defaultValue={whiteComputerStr} onChange={changeWhiteComputer} /></td>
-                </tr>
-                <tr>
-                    <td>Black AI</td>
-                    <td colSpan={2}><ComputerSelector defaultValue={blackComputerStr} onChange={changeBlackComputer} /></td>
-                </tr>
-                <tr>
-                    <td colSpan={3}>
-                        <button onClick={restartGame}>Restart</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <Board blackComputer={blackComputer} whiteComputer={whiteComputer} computerDelay={delay} key={gameNumber} />
+        <div className='game'>
+            <Toolbar onFullScreenClick={fullScreen} onRestartClick={restartGame} gameStep={gameStep}/>
+            <Board
+                blackComputer={blackComputer}
+                whiteComputer={whiteComputer}
+                computerDelay={delay}
+                gameStep={gameStep}
+                onGameStepChange={gameStepChange}
+                key={gameNumber}
+            />
+        </div>
     </>;
 }
 

@@ -21,6 +21,8 @@ interface BoardProps {
     whiteComputer: Computer | null;
     blackComputer: Computer | null;
     computerDelay: number;
+    gameStep: GameStep;
+    onGameStepChange: (gameStep: GameStep) => void;
 }
 
 interface BoardState {
@@ -32,8 +34,7 @@ class Board extends React.Component<BoardProps, BoardState> {
     constructor(props: BoardProps) {
         super(props);
         this.state = {
-            //tiles: props.tiles,
-            gameStep: GameStep.WHITE_TO_SELECT_QUEEN
+            gameStep: props.gameStep
         }
     }
 
@@ -57,6 +58,11 @@ class Board extends React.Component<BoardProps, BoardState> {
         return [GameStep.BLACK_TO_SELECT_QUEEN, GameStep.BLACK_TO_MOVE_QUEEN, GameStep.BLACK_TO_SHOOT_ARROW].includes(this.state.gameStep);
     }
 
+    _setState = (state: BoardState) => {
+        this.props.onGameStepChange(state.gameStep);
+        this.setState(state);
+    }
+
     getComputerForMove = (): Computer | null => {
         if (this.isWhiteMove() && this.props.whiteComputer) {
             return this.props.whiteComputer;
@@ -78,7 +84,7 @@ class Board extends React.Component<BoardProps, BoardState> {
         const _queenSelect = (queen: BoardTileState.WHITE_QUEEN | BoardTileState.BLACK_QUEEN) => {
             const selectedQueen = computer.selectQueen(queen);
             if (!selectedQueen) {
-                this.setState({ gameStep: this.isWhiteMove() ? GameStep.BLACK_WON : GameStep.WHITE_WON });
+                this._setState({ gameStep: this.isWhiteMove() ? GameStep.BLACK_WON : GameStep.WHITE_WON });
                 return;
             }
             _delay(selectedQueen);
@@ -96,7 +102,7 @@ class Board extends React.Component<BoardProps, BoardState> {
         const _arrowShoot = () => {
             const arrowTarget = computer.shootArrow(this.state.selected!);
             if (!arrowTarget) {
-                console.error('Attempting to shoot an arrow, this should never happen (you can always shoot back to previous queen position', this.state.selected);
+                console.error('Attempting to shoot an arrow, this should never happen (you can always shoot back to previous queen position)', this.state.selected);
                 return;
             }
             _delay(arrowTarget);
@@ -132,7 +138,7 @@ class Board extends React.Component<BoardProps, BoardState> {
             return console.error('No queen in', c);
         }
 
-        this.setState({
+        this._setState({
             gameStep: nextStep,
             selected: c,
         });
@@ -168,7 +174,7 @@ class Board extends React.Component<BoardProps, BoardState> {
         tiles[this.state.selected.y][this.state.selected.x] = setCurrentStatusTo;
         tiles[c.y][c.x] = setTargetStatusTo;
 
-        this.setState({
+        this._setState({
             gameStep: nextStep,
             selected: nextSelected,
         });
@@ -213,13 +219,11 @@ class Board extends React.Component<BoardProps, BoardState> {
     }
 
     render() {
-        return <>
-            <div className='currentStep'>
-                Current step: { this.state.gameStep }
-            </div>
-            { tiles.map((row: Array<BoardTileState>, y) => (
-                <div key={y} className='row'>
-                    {row.map((s, x) => {
+        return (
+            <div className='board'>
+                { tiles.map((row: Array<BoardTileState>, y) => (
+                    <div key={y} className='row'>
+                    { row.map((s, x) => {
                         return <Tile
                             key={String(x) + String(y)}
                             isClickable={ this.isClickableTile({ x, y }) }
@@ -229,10 +233,11 @@ class Board extends React.Component<BoardProps, BoardState> {
                             selected={this.state.selected ? this.state.selected.x === x && this.state.selected.y === y : false}
                             state={s}
                         />
-                    } )}
-                </div>
-            )) }
-        </>;
+                    }) }
+                    </div>
+                )) }
+            </div>
+        );
     }
 }
 

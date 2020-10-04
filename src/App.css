@@ -8,13 +8,92 @@ body {
   padding: 1vw;
   font-family: Verdana;
 }
+body.fullScreen {
+  padding: 0;
+}
 
-.currentStep {
-  margin: 15px 0 5px;
+.fullScreen .heading {
+  display: none;
+}
+.heading table {
+  margin: 10px 0 5px;
+  border-top: 1px dashed gray;
+  border-bottom: 1px dashed gray;
+  padding: 5px 0;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.fullScreen .game {
+  flex-direction: row;
+}
+.fullScreen .toolbar {
+  order: 5;
+  flex-direction: column;
+  align-items: normal;
+  margin: 10px 0 0 10px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.toolbar > * {
+  margin: 5px 5px 10px;
+  height: 34px;
+}
+.toolbar > span {
   color: gray;
-  font-weight: 700;
-  font-style: italic;
+  margin-left: 0;
+}
+
+.toolbarButton {
+  position: relative;
   display: inline-block;
+  font-size: 18px;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 6px;
+  text-align: center;
+  transition: top .01s linear;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+
+  background-color: #F0D264;
+  box-shadow: 0 0 0 1px #F0D264 inset,
+  0 0 0 2px rgba(255,255,255,0.15) inset,
+  0 8px 0 0 rgba(196, 172, 83, .7),
+  0 8px 0 1px rgba(0,0,0,.4),
+  0 8px 8px 1px rgba(0,0,0,0.5);
+}
+.toolbarButton:hover {background-color: #F0D264;}
+.toolbarButton:active {
+  top: 9px;
+  box-shadow: 0 0 0 1px #F0D264 inset,
+  0 0 0 2px rgba(255,255,255,0.15) inset,
+  0 0 0 1px rgba(0,0,0,0.4);
+}
+
+.gameStepContainer {
+  display: flex;
+  align-items: center;
+}
+.gameStep {
+  display: inline-block;
+  width: 3vmin;
+  height: 3vmin;
+}
+.gameStep::before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: '\00A0';
+  background-repeat: no-repeat;
+  background-size: 70%;
+  background-position: center;
 }
 
 .tile {
@@ -26,6 +105,10 @@ body {
   vertical-align: top;
   opacity: 0.7;
   cursor: not-allowed;
+}
+.fullScreen .tile {
+  width: 10vmin;
+  height: 10vmin;
 }
 .tileValid {
   opacity: 1;
