@@ -9,6 +9,14 @@ body {
   font-family: Verdana;
 }
 
+.currentStep {
+  margin: 15px 0 5px;
+  color: gray;
+  font-weight: 700;
+  font-style: italic;
+  display: inline-block;
+}
+
 .tile {
   border: 1px solid black;
   display: inline-block;

@@ -214,15 +214,18 @@ class Board extends React.Component<BoardProps, BoardState> {
 
     render() {
         return <>
-            <div style={{margin:'15px 0 5px 0', color: 'gray', fontWeight: 700, fontStyle:'italic'}}>Current step: { this.state.gameStep }</div>
+            <div className='currentStep'>
+                Current step: { this.state.gameStep }
+            </div>
             { tiles.map((row: Array<BoardTileState>, y) => (
-                <div key={y}>
+                <div key={y} className='row'>
                     {row.map((s, x) => {
                         return <Tile
                             key={String(x) + String(y)}
                             isClickable={ this.isClickableTile({ x, y }) }
                             isEven={(x + y) % 2 === 0}
-                            onClick={() => this.handleClick({ x, y })}
+                            onClick={ this.handleClick }
+                            coordinates={{ x, y }}
                             selected={this.state.selected ? this.state.selected.x === x && this.state.selected.y === y : false}
                             state={s}
                         />

@@ -19,7 +19,8 @@ export interface TileCoordinate {
 interface TileProps {
     isEven: boolean;
     isClickable: boolean;
-    onClick: () => void;
+    onClick: (c: TileCoordinate) => void;
+    coordinates: TileCoordinate;
     selected: boolean;
     state: BoardTileState;
 }
@@ -48,8 +49,34 @@ function getClassNames(props: TileProps): string {
     return classNames.join(' ');
 }
 
+let dropTarget: HTMLDivElement | undefined;
+
 const Tile: React.FC<TileProps> = (props) => (
-    <div className={getClassNames(props)} onClick={ () => props.isClickable && props.onClick()} />
+    <div
+        className={ getClassNames(props) }
+        data-x={ props.coordinates.x }
+        data-y={ props.coordinates.y }
+        onClick={ () => props.isClickable && props.onClick(props.coordinates) }
+
+        draggable={ props.isClickable }
+        onDragStart={ props.isClickable ? (e) => {
+            e.dataTransfer.effectAllowed = 'move';
+            props.onClick(props.coordinates);
+        } : undefined }
+        onDragEnter={ (e) => {
+            dropTarget = e.currentTarget.classList.contains('tileValid') ? e.currentTarget : undefined;
+        }}
+        onDragOver={ (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = dropTarget ? 'move' : 'none';
+        }}
+        onDragEnd={ () => {
+            if (dropTarget) {
+                props.onClick({ x: Number(dropTarget.dataset.x), y: Number(dropTarget.dataset.y) });
+            }
+            dropTarget = undefined;
+        } }
+    />
 );
 
 export { Tile, BoardTileState };
