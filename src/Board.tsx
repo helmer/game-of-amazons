@@ -30,6 +30,26 @@ interface BoardState {
     selected?: TileCoordinate
 }
 
+const buildBoard = (
+    blacks: Array<[number, number]> = [[0, 3], [0, 6], [3, 0], [3, 9]],
+    whites: Array<[number, number]> = [[6, 0], [6, 9], [9, 3], [9, 6]],
+    arrows: Array<[number, number]> = [],
+) => {
+    const rows: BoardTiles = [];
+
+    Array.from(Array(10)).forEach((_, row) => {
+        let cols: BoardTileState[] = [];
+        Array.from(Array(10)).forEach(_ => cols.push(BoardTileState.FREE));
+        rows.push(cols);
+    });
+
+    blacks.forEach(t => rows[t[0]][t[1]] = BoardTileState.BLACK_QUEEN);
+    whites.forEach(t => rows[t[0]][t[1]] = BoardTileState.WHITE_QUEEN);
+    arrows.forEach(t => rows[t[0]][t[1]] = BoardTileState.BLACK_ARROW);
+
+    return rows;
+}
+
 class Board extends React.Component<BoardProps, BoardState> {
     constructor(props: BoardProps) {
         super(props);
@@ -241,4 +261,4 @@ class Board extends React.Component<BoardProps, BoardState> {
     }
 }
 
-export { Board, GameStep };
+export { buildBoard, Board, GameStep };

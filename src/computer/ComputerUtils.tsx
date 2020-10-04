@@ -1,11 +1,27 @@
 
 import { BoardTiles } from '../Board';
 import { BoardTileState, TileCoordinate } from '../Tile';
+import { Random as RandomComputer } from "./Random";
+import { Smart as SmartComputer } from "./Smart";
 
 export interface Computer {
     selectQueen: (queen: BoardTileState.BLACK_QUEEN | BoardTileState.WHITE_QUEEN) => TileCoordinate | null;
     moveQueen:   (from: TileCoordinate) => TileCoordinate | null;
     shootArrow:  (from: TileCoordinate) => TileCoordinate | null;
+}
+
+export enum ComputerSmartness {
+    NONE   = 'NONE',
+    RANDOM = 'RANDOM',
+    SMART  = 'SMART',
+}
+
+export const createAI = (smartness: ComputerSmartness) => {
+    switch (smartness) {
+        case ComputerSmartness.NONE:   return null;
+        case ComputerSmartness.RANDOM: return RandomComputer();
+        case ComputerSmartness.SMART:  return SmartComputer();
+    }
 }
 
 export class ComputerUtils {
