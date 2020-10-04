@@ -8,7 +8,10 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-179566353-1');
+        gtag('config', 'UA-179566353-1', {
+          cookie_domain: 'game-of-amazons.vercel.app',
+          cookie_flags: 'SameSite=None;Secure'
+        });
       }
     </script>
 
