@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { tiles } from './App';
 import { Tile, BoardTileState, TileCoordinate } from './Tile';
 import { Computer, ComputerUtils } from './computer/ComputerUtils';
 
@@ -27,6 +26,7 @@ interface BoardProps {
 
 interface BoardState {
     gameStep: GameStep;
+    tiles: BoardTiles;
     selected?: TileCoordinate
 }
 
@@ -34,10 +34,10 @@ const buildBoard = (
     blacks: Array<[number, number]> = [[0, 3], [0, 6], [3, 0], [3, 9]],
     whites: Array<[number, number]> = [[6, 0], [6, 9], [9, 3], [9, 6]],
     arrows: Array<[number, number]> = [],
-) => {
+): BoardTiles => {
     const rows: BoardTiles = [];
 
-    Array.from(Array(10)).forEach((_, row) => {
+    Array.from(Array(10)).forEach(() => {
         let cols: BoardTileState[] = [];
         Array.from(Array(10)).forEach(_ => cols.push(BoardTileState.FREE));
         rows.push(cols);
@@ -54,14 +54,13 @@ class Board extends React.Component<BoardProps, BoardState> {
     constructor(props: BoardProps) {
         super(props);
         this.state = {
-            gameStep: props.gameStep
+            gameStep: props.gameStep,
+            tiles: buildBoard(),
         }
     }
 
     componentDidMount() {
-        if (this.props.whiteComputer) {
-            this.makeComputerMove();
-        }
+        this.makeComputerMove();
     }
 
     componentDidUpdate(prevProps: BoardProps, prevState: BoardState) {
@@ -78,9 +77,9 @@ class Board extends React.Component<BoardProps, BoardState> {
         return [GameStep.BLACK_TO_SELECT_QUEEN, GameStep.BLACK_TO_MOVE_QUEEN, GameStep.BLACK_TO_SHOOT_ARROW].includes(this.state.gameStep);
     }
 
-    _setState = (state: BoardState) => {
-        this.props.onGameStepChange(state.gameStep);
-        this.setState(state);
+    _setState = (partialState: Partial<BoardState>) => {
+        this.props.onGameStepChange(partialState.gameStep!);
+        this.setState({ ...this.state, ...partialState });
     }
 
     getComputerForMove = (): Computer | null => {
@@ -102,7 +101,7 @@ class Board extends React.Component<BoardProps, BoardState> {
         const _delay = (c: TileCoordinate) => setTimeout(() => this.handleClick(c, false), this.props.computerDelay);
 
         const _queenSelect = (queen: BoardTileState.WHITE_QUEEN | BoardTileState.BLACK_QUEEN) => {
-            const selectedQueen = computer.selectQueen(queen);
+            const selectedQueen = computer.selectQueen(this.state.tiles, queen);
             if (!selectedQueen) {
                 this._setState({ gameStep: this.isWhiteMove() ? GameStep.BLACK_WON : GameStep.WHITE_WON });
                 return;
@@ -111,7 +110,7 @@ class Board extends React.Component<BoardProps, BoardState> {
         }
 
         const _queenMove = () => {
-            const queenTarget = computer.moveQueen(this.state.selected!);
+            const queenTarget = computer.moveQueen(this.state.tiles, this.state.selected!);
             if (!queenTarget) {
                 console.error('Selected a queen which cannot move, this should never happen', this.state.selected!.y, this.state.selected!.x);
                 return;
@@ -120,7 +119,7 @@ class Board extends React.Component<BoardProps, BoardState> {
         }
 
         const _arrowShoot = () => {
-            const arrowTarget = computer.shootArrow(this.state.selected!);
+            const arrowTarget = computer.shootArrow(this.state.tiles, this.state.selected!);
             if (!arrowTarget) {
                 console.error('Attempting to shoot an arrow, this should never happen (you can always shoot back to previous queen position)', this.state.selected);
                 return;
@@ -148,12 +147,12 @@ class Board extends React.Component<BoardProps, BoardState> {
         if (!this.state.selected) {
             return false;
         }
-        const validMoves = ComputerUtils.validMoves(tiles, this.state.selected);
+        const validMoves = ComputerUtils.validMoves(this.state.tiles, this.state.selected);
         return validMoves.some(e => e.x === c.x && e.y === c.y);
     }
 
     selectQueen = (c: TileCoordinate, queen: BoardTileState.BLACK_QUEEN | BoardTileState.WHITE_QUEEN, nextStep: GameStep.WHITE_TO_MOVE_QUEEN | GameStep.BLACK_TO_MOVE_QUEEN) => {
-        const targetTile = tiles[c.y][c.x];
+        const targetTile = this.state.tiles[c.y][c.x];
         if (targetTile !== queen) {
             return console.error('No queen in', c);
         }
@@ -165,7 +164,7 @@ class Board extends React.Component<BoardProps, BoardState> {
     }
 
     moveQueen = (to: TileCoordinate, queen: BoardTileState.BLACK_QUEEN | BoardTileState.WHITE_QUEEN, moveStep: GameStep.WHITE_TO_MOVE_QUEEN | GameStep.BLACK_TO_MOVE_QUEEN, arrowStep: GameStep) => {
-        const targetTile = tiles[to.y][to.x];
+        const targetTile = this.state.tiles[to.y][to.x];
         if (targetTile === queen) { // Select different queen
             this.selectQueen(to, BoardTileState.WHITE_QUEEN, moveStep);
             return;
@@ -191,12 +190,14 @@ class Board extends React.Component<BoardProps, BoardState> {
             return;
         }
 
-        tiles[this.state.selected.y][this.state.selected.x] = setCurrentStatusTo;
-        tiles[c.y][c.x] = setTargetStatusTo;
+        const tilesDeepClone = JSON.parse(JSON.stringify(this.state.tiles));
+        tilesDeepClone[this.state.selected.y][this.state.selected.x] = setCurrentStatusTo;
+        tilesDeepClone[c.y][c.x] = setTargetStatusTo;
 
         this._setState({
             gameStep: nextStep,
             selected: nextSelected,
+            tiles: tilesDeepClone,
         });
     }
 
@@ -224,13 +225,13 @@ class Board extends React.Component<BoardProps, BoardState> {
     isClickableTile = (c: TileCoordinate): boolean => {
         switch (this.state.gameStep) {
             case GameStep.WHITE_TO_SELECT_QUEEN:
-                return tiles[c.y][c.x] === BoardTileState.WHITE_QUEEN;
+                return this.state.tiles[c.y][c.x] === BoardTileState.WHITE_QUEEN;
             case GameStep.BLACK_TO_SELECT_QUEEN:
-                return tiles[c.y][c.x] === BoardTileState.BLACK_QUEEN;
+                return this.state.tiles[c.y][c.x] === BoardTileState.BLACK_QUEEN;
             case GameStep.WHITE_TO_MOVE_QUEEN:
-                return tiles[c.y][c.x] === BoardTileState.WHITE_QUEEN || this.isValidMove(c);
+                return this.state.tiles[c.y][c.x] === BoardTileState.WHITE_QUEEN || this.isValidMove(c);
             case GameStep.BLACK_TO_MOVE_QUEEN:
-                return tiles[c.y][c.x] === BoardTileState.BLACK_QUEEN || this.isValidMove(c);
+                return this.state.tiles[c.y][c.x] === BoardTileState.BLACK_QUEEN || this.isValidMove(c);
             case GameStep.WHITE_TO_SHOOT_ARROW:
             case GameStep.BLACK_TO_SHOOT_ARROW:
                 return this.isValidMove(c);
@@ -241,7 +242,7 @@ class Board extends React.Component<BoardProps, BoardState> {
     render() {
         return (
             <div className='board'>
-                { tiles.map((row: Array<BoardTileState>, y) => (
+                { this.state.tiles.map((row: Array<BoardTileState>, y) => (
                     <div key={y} className='row'>
                         { row.map((s, x) => {
                             return <Tile

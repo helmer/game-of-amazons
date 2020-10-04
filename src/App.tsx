@@ -1,17 +1,15 @@
 
 import React, { useState } from 'react';
 import './App.css';
-import { buildBoard, Board, GameStep } from './Board';
+import { Board, GameStep } from './Board';
 import { createAI, Computer, ComputerSmartness } from './computer/ComputerUtils';
 import { Configuration } from './Configuration';
 import { Toolbar } from './Toolbar';
 import { References } from "./References";
 
-let tiles = buildBoard();
-
 const defaultDelay = 500;
 const defaultWhiteComputer = ComputerSmartness.NONE;
-const defaultBlackComputer = ComputerSmartness.SMART;
+const defaultBlackComputer = ComputerSmartness.NONE;
 const defaultGameStep      = GameStep.WHITE_TO_SELECT_QUEEN;
 
 let whiteComputer: Computer | null = createAI(defaultWhiteComputer);
@@ -36,7 +34,6 @@ const App: React.FC = () => {
     }
 
     const restartGame = () => {
-        tiles = buildBoard();
         whiteComputer = createAI(whiteComputerStr);
         blackComputer = createAI(blackComputerStr)
         gameStepChange(defaultGameStep);
@@ -72,4 +69,4 @@ const App: React.FC = () => {
     document.getElementsByTagName('body')[0].classList[window.innerWidth > window.innerHeight ? 'add' : 'remove']('landscape');
 })();
 
-export { App, tiles };
+export { App };

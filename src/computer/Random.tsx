@@ -1,23 +1,23 @@
 
 import { BoardTileState, TileCoordinate } from '../Tile';
 import { Computer, ComputerUtils } from './ComputerUtils';
-import { tiles } from '../App';
+import { BoardTiles } from '../Board';
 
 export function Random(): Computer {
     const _selectRandomTile = (list: TileCoordinate[]) => {
         return list.length ? list[Math.floor(Math.random() * list.length)] : null;
     }
 
-    const selectQueen = (queen: BoardTileState.BLACK_QUEEN | BoardTileState.WHITE_QUEEN) => {
-        return _selectRandomTile(ComputerUtils.findTilesByState(tiles, queen));
+    const selectQueen = (bt: BoardTiles, queen: BoardTileState.BLACK_QUEEN | BoardTileState.WHITE_QUEEN) => {
+        return _selectRandomTile(ComputerUtils.findTilesByState(bt, queen));
     }
 
-    const moveQueen = (from: TileCoordinate) => {
-        return _selectRandomTile(ComputerUtils.validMoves(tiles, from));
+    const moveQueen = (bt: BoardTiles, from: TileCoordinate) => {
+        return _selectRandomTile(ComputerUtils.validMoves(bt, from));
     }
 
-    const shootArrow = (from: TileCoordinate) => {
-        return _selectRandomTile(ComputerUtils.validMoves(tiles, from));
+    const shootArrow = (bt: BoardTiles, from: TileCoordinate) => {
+        return _selectRandomTile(ComputerUtils.validMoves(bt, from));
     }
 
     return {
