@@ -9,7 +9,7 @@ import { References } from "./References";
 
 const defaultDelay = 500;
 const defaultWhiteComputer = ComputerSmartness.NONE;
-const defaultBlackComputer = ComputerSmartness.NONE;
+const defaultBlackComputer = ComputerSmartness.SMART;
 const defaultGameStep      = GameStep.WHITE_TO_SELECT_QUEEN;
 
 let whiteComputer: Computer | null = createAI(defaultWhiteComputer);
