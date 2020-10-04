@@ -89,30 +89,30 @@ label {
   vertical-align: top;
   cursor: not-allowed;
   border: 0px solid #EEE;
+  opacity: 0.6;
 }
 .tileBlack {
-  background-color: #555;
+  background-color: #D18B47;
 }
 .tileWhite {
-  background-color: #CCC;
+  background-color: #FFCE9E;
 }
 .tileValid {
   cursor: pointer;
   border-width: 2px;
+  opacity: 1;
 }
 .tileBlack.tileValid {
-  background-color: #000;
-  border-color: #555;
+  border-color: #CE7827;
 }
 .tileWhite.tileValid {
-  background-color: #FFF;
-  border-color: #AAA;
+  border-color: #FFBC82;
 }
 .tileWhiteQueen.tileValid, .tileBlackQueen.tileValid {
-  border: 2px outset orange;
+  border: 0.2rem outset ivory;
 }
 .tile.tileSelected {
-  border: 3px inset darkseagreen;
+  border: 0.2rem inset ivory;
 }
 .tile::before {
   display: inline-block;
