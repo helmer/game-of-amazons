@@ -104,24 +104,26 @@ const App: React.FC = () => {
         <h1>Game of the Amazons</h1>
 
         <table>
-            <tr>
-                <td>Computer delay</td>
-                <td><input type="text" placeholder="1000" ref={delayInput} /></td>
-                <td><button onClick={changeDelay}>Change delay</button></td>
-            </tr>
-            <tr>
-                <td>White AI</td>
-                <td colSpan={2}><ComputerSelector defaultValue={whiteComputerStr} onChange={changeWhiteComputer} /></td>
-            </tr>
-            <tr>
-                <td>Black AI</td>
-                <td colSpan={2}><ComputerSelector defaultValue={blackComputerStr} onChange={changeBlackComputer} /></td>
-            </tr>
-            <tr>
-                <td colSpan={3}>
-                    <button onClick={restartGame}>Restart</button>
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td>Computer delay</td>
+                    <td><input type="text" placeholder="1000" ref={delayInput} /></td>
+                    <td><button onClick={changeDelay}>Change delay</button></td>
+                </tr>
+                <tr>
+                    <td>White AI</td>
+                    <td colSpan={2}><ComputerSelector defaultValue={whiteComputerStr} onChange={changeWhiteComputer} /></td>
+                </tr>
+                <tr>
+                    <td>Black AI</td>
+                    <td colSpan={2}><ComputerSelector defaultValue={blackComputerStr} onChange={changeBlackComputer} /></td>
+                </tr>
+                <tr>
+                    <td colSpan={3}>
+                        <button onClick={restartGame}>Restart</button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
 
         <Board blackComputer={blackComputer} whiteComputer={whiteComputer} computerDelay={delay} key={gameNumber} />
