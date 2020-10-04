@@ -5,7 +5,6 @@ import { GameStep } from './Board';
 interface ToolbarProps {
     gameStep: GameStep;
     onRestartClick: () => void;
-    onFullScreenClick: () => void;
 }
 
 const gameStepToClassname = {
@@ -19,22 +18,25 @@ const gameStepToClassname = {
     [GameStep.BLACK_WON]:             'tileBlackQueen',
 }
 
-const RestartButton: React.FC<{ onClick: () => void}> = p => <button className='toolbarButton' onClick={p.onClick}>Restart</button>;
-const FullScreenButton: React.FC<{ onClick: () => void}> = p => <button className='toolbarButton' onClick={p.onClick}>Full screen</button>;
-const GameStepComponent: React.FC<{ step: GameStep }> = p => <div style={{ display: 'flex', alignItems: 'center' }}>
-    <div className={ 'gameStep ' + gameStepToClassname[p.step] }></div>
-    { [GameStep.WHITE_WON, GameStep.BLACK_WON].includes(p.step)
-        ? <span style={{ color: 'gray '}}>has won!</span>
-        : <span style={{ color: 'gray '}}>⬅ turn</span>
-    }
-
-</div>;
+const gameStepToString = {
+    [GameStep.WHITE_TO_SELECT_QUEEN]: 'white to select queen',
+    [GameStep.WHITE_TO_MOVE_QUEEN]:   'white to move queen',
+    [GameStep.WHITE_TO_SHOOT_ARROW]:  'white to shoot arrow',
+    [GameStep.BLACK_TO_SELECT_QUEEN]: 'black to select queen',
+    [GameStep.BLACK_TO_MOVE_QUEEN]:   'black to move queen',
+    [GameStep.BLACK_TO_SHOOT_ARROW]:  'black to shoot arrow',
+    [GameStep.WHITE_WON]:             'white won',
+    [GameStep.BLACK_WON]:             'black won',
+}
 
 const Toolbar: React.FC<ToolbarProps> = (props) => <>
-    <div className='toolbar'>
-        <RestartButton onClick={props.onRestartClick}/>
-        <FullScreenButton onClick={props.onFullScreenClick}/>
-        <GameStepComponent step={props.gameStep}/>
+    <div className='gameStepContainer'>
+        <div style={{ flexGrow: 1 }}>
+            <div className={ 'gameStep ' + gameStepToClassname[props.gameStep] }> </div>
+            <span>⬅</span>
+            <span>{ gameStepToString[props.gameStep] }</span>
+        </div>
+        <button className='toolbarButton' onClick={props.onRestartClick}>Restart</button>
     </div>
 </>;
 

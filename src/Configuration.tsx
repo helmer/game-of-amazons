@@ -20,28 +20,29 @@ const changeDelay = (callback: (delay: number) => void, defaultDelay: number) =>
     }
 }
 
-const Heading: React.FC<HeadingProps> = (props) => <>
-    <div className='heading'>
-        <h1>Game of the Amazons</h1>
-
+const Configuration: React.FC<HeadingProps> = (props) => (
+    <div className='configuration'>
+        <h3>Configuration</h3>
         <table>
             <tbody>
                 <tr>
                     <td>Computer delay</td>
-                    <td><input type="text" placeholder={String(props.defaultDelay) + ' milliseconds'} ref={delayInput} /></td>
-                    <td><button onClick={() => changeDelay(props.onDelayChange, props.defaultDelay)}>Change delay</button></td>
+                    <td>
+                        <input type='text' placeholder={String(props.defaultDelay) + ' milliseconds'} ref={delayInput} />
+                        <input type='button' onClick={() => changeDelay(props.onDelayChange, props.defaultDelay)} value='Change'/>
+                    </td>
                 </tr>
                 <tr>
                     <td>White AI</td>
-                    <td colSpan={2}>{props.whiteAI}</td>
+                    <td>{props.whiteAI}</td>
                 </tr>
                 <tr>
                     <td>Black AI</td>
-                    <td colSpan={2}>{props.blackAI}</td>
+                    <td>{props.blackAI}</td>
                 </tr>
             </tbody>
         </table>
     </div>
-</>;
+);
 
-export { Heading };
+export { Configuration };

@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
+import React, {FormEvent, useState} from 'react';
 import './App.css';
 import {Board, BoardTiles, GameStep} from './Board';
 import { Computer } from './computer/ComputerUtils';
 import { BoardTileState } from './Tile';
 import { Random as RandomComputer } from './computer/Random';
 import { Smart as SmartComputer } from './computer/Smart';
-import { Heading } from './Heading';
+import { Configuration } from './Configuration';
 import { Toolbar } from './Toolbar';
 
 const buildBoard = (
@@ -55,15 +55,33 @@ let blackComputer: Computer | null = createAI(defaultBlackComputer);
 interface ComputerSelectorProps {
     defaultValue: ComputerSmartness;
     onChange: (smartness: ComputerSmartness) => void;
+    pfx: string;
 }
 
-const ComputerSelector: React.FC<ComputerSelectorProps> = (props: ComputerSelectorProps) => (
-    <select defaultValue={props.defaultValue} onChange={ e => props.onChange(e.target.value as ComputerSmartness) }>
-        <option>{ComputerSmartness.NONE}</option>
-        <option>{ComputerSmartness.RANDOM}</option>
-        <option>{ComputerSmartness.SMART}</option>
-    </select>
-);
+const ComputerSelector: React.FC<ComputerSelectorProps> = (props: ComputerSelectorProps) => {
+    const [selected, setSelected] = useState(props.defaultValue);
+
+    const updateSelected = (e: FormEvent<HTMLDivElement>) => {
+        if (e.target) {
+            const smartness = (e.target as HTMLInputElement).value as ComputerSmartness;
+            props.onChange(smartness);
+            setSelected(smartness);
+        }
+    }
+
+    const InputWithLabel: React.FC<{ name: string, value: string, selected: boolean, pfx: string }> = (p) => <>
+        <input type="radio" id={ p.pfx + p.value } value={ p.value } defaultChecked={ p.selected } />
+        <label htmlFor={ p.pfx + p.value }>{ p.name }</label>
+    </>;
+
+    return (
+        <div className='computerSelector'onChange={ updateSelected }>
+            <InputWithLabel name='None'   value={ ComputerSmartness.NONE   } selected={ ComputerSmartness.NONE   === selected } pfx={ props.pfx } />
+            <InputWithLabel name='Random' value={ ComputerSmartness.RANDOM } selected={ ComputerSmartness.RANDOM === selected } pfx={ props.pfx } />
+            <InputWithLabel name='Smart'  value={ ComputerSmartness.SMART  } selected={ ComputerSmartness.SMART  === selected } pfx={ props.pfx } />
+        </div>
+    );
+};
 
 const App: React.FC = () => {
     const [delay, setDelay] = useState(defaultDelay);
@@ -91,31 +109,39 @@ const App: React.FC = () => {
         restart(gameNumber + 1);
     }
 
-    const fullScreen = () => {
-        const bodyClasses = document.getElementsByTagName('body')[0].classList;
-        bodyClasses[bodyClasses.contains('fullScreen') ? 'remove' : 'add']('fullScreen');
-    }
-
     return <>
-        <Heading
-            whiteAI={<ComputerSelector defaultValue={whiteComputerStr} onChange={changeWhiteComputer}/>}
-            blackAI={<ComputerSelector defaultValue={blackComputerStr} onChange={changeBlackComputer}/>}
-            defaultDelay={defaultDelay}
-            onDelayChange={setDelay}
+        <h2>
+            Game of the Amazons
+            <sup><a href="#wiki">[1]</a></sup>
+        </h2>
+
+        <Board
+            blackComputer={blackComputer}
+            whiteComputer={whiteComputer}
+            computerDelay={delay}
+            gameStep={gameStep}
+            onGameStepChange={gameStepChange}
+            key={gameNumber}
         />
 
-        <div className='game'>
-            <Toolbar onFullScreenClick={fullScreen} onRestartClick={restartGame} gameStep={gameStep}/>
-            <Board
-                blackComputer={blackComputer}
-                whiteComputer={whiteComputer}
-                computerDelay={delay}
-                gameStep={gameStep}
-                onGameStepChange={gameStepChange}
-                key={gameNumber}
+        <div>
+            <Toolbar onRestartClick={restartGame} gameStep={gameStep}/>
+            <Configuration
+                whiteAI={<ComputerSelector pfx='white' defaultValue={whiteComputerStr} onChange={changeWhiteComputer}/>}
+                blackAI={<ComputerSelector pfx='black' defaultValue={blackComputerStr} onChange={changeBlackComputer}/>}
+                defaultDelay={defaultDelay}
+                onDelayChange={setDelay}
             />
+            <div className='references'>
+                <h3>References</h3>
+                <div id='wiki'>1. <a href='https://en.wikipedia.org/wiki/Game_of_the_Amazon' target='_blank' rel='noopener noreferrer'>Game of the Amazons - Wikipedia</a></div>
+            </div>
         </div>
     </>;
 }
+
+((window as any).onresize = () => {
+    document.getElementsByTagName('body')[0].classList[window.innerWidth > window.innerHeight ? 'add' : 'remove']('landscape');
+})();
 
 export { App, tiles };

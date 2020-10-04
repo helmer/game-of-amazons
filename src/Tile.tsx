@@ -36,7 +36,7 @@ const stateToClassname = {
 }
 
 function getClassNames(props: TileProps): string {
-    let classNames = ['tile', stateToClassname[props.state], props.isEven ? 'tileEven' : 'tileOdd'];
+    let classNames = ['tile', stateToClassname[props.state], props.isEven ? 'tileBlack' : 'tileWhite'];
 
     if (props.isClickable) {
         classNames.push('tileValid');

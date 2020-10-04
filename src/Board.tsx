@@ -223,17 +223,17 @@ class Board extends React.Component<BoardProps, BoardState> {
             <div className='board'>
                 { tiles.map((row: Array<BoardTileState>, y) => (
                     <div key={y} className='row'>
-                    { row.map((s, x) => {
-                        return <Tile
-                            key={String(x) + String(y)}
-                            isClickable={ this.isClickableTile({ x, y }) }
-                            isEven={(x + y) % 2 === 0}
-                            onClick={ this.handleClick }
-                            coordinates={{ x, y }}
-                            selected={this.state.selected ? this.state.selected.x === x && this.state.selected.y === y : false}
-                            state={s}
-                        />
-                    }) }
+                        { row.map((s, x) => {
+                            return <Tile
+                                key={String(x) + String(y)}
+                                isClickable={ this.isClickableTile({ x, y }) }
+                                isEven={(x + y) % 2 === 0}
+                                onClick={ this.handleClick }
+                                coordinates={{ x, y }}
+                                selected={this.state.selected ? this.state.selected.x === x && this.state.selected.y === y : false}
+                                state={s}
+                            />
+                        }) }
                     </div>
                 )) }
             </div>
