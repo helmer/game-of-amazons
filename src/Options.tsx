@@ -57,6 +57,17 @@ const ComputerSelector: React.FC<ComputerSelectorProps> = (p: ComputerSelectorPr
     );
 };
 
+const Donate: React.FC = (p) => <>
+    <form className='donate' action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_top'>
+        <input type='hidden' name='cmd' value='_s-xclick' />
+        <input type='hidden' name='hosted_button_id' value='XBPDHM59DPX9E' />
+        <button>
+            <input type='button' name='submit' title='PayPal - The safer, easier way to pay online!' alt='' />
+            Donate
+        </button>
+    </form>
+</>
+
 const Options: React.FC<OptionsProps> = (p) => {
     const handleKeyDown = (e: KeyboardEvent, p: OptionsProps) => {
         if (e.keyCode === 27) {
@@ -83,8 +94,12 @@ const Options: React.FC<OptionsProps> = (p) => {
                     <div><b>Black AI</b></div>
                     <ComputerSelector defaultValue={p.defaultBlackAI} onChange={p.onChangeBlackAI}/>
                 </div>
-                <div className='optionsClose'>
-                    <button onClick={p.onClose}>Close</button>
+
+                <div className='optionsButtons'>
+                    <Donate />
+                    <div className='optionsClose'>
+                        <button onClick={p.onClose}>Close</button>
+                    </div>
                 </div>
             </div>
         </div>

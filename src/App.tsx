@@ -18,7 +18,7 @@ const App: React.FC = () => {
     const [delay, setDelay] = useState(defaultDelay);
     const [gameNumber, restart] = useState(1);
     const [gameStep, gameStepChange] = useState(defaultGameStep);
-    const [showOptionsModal, toggleOptionsModal] = useState(true);
+    const [showOptionsModal, toggleOptionsModal] = useState(false);
 
     const [whiteComputerStr, setWhiteComputer] = useState<ComputerSmartness>(defaultWhiteComputer);
     const [blackComputerStr, setBlackComputer] = useState<ComputerSmartness>(defaultBlackComputer);
