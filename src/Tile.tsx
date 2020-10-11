@@ -49,7 +49,8 @@ function getClassNames(props: TileProps): string {
     return classNames.join(' ');
 }
 
-let dropTarget: HTMLDivElement | undefined;
+let dragTarget: HTMLDivElement | undefined;
+let touchTarget: TouchEvent | undefined;
 
 const Tile: React.FC<TileProps> = (props) => (
     <div
@@ -64,17 +65,35 @@ const Tile: React.FC<TileProps> = (props) => (
             props.onClick(props.coordinates);
         } : undefined }
         onDragEnter={ (e) => {
-            dropTarget = e.currentTarget.classList.contains('tileValid') ? e.currentTarget : undefined;
+            dragTarget = e.currentTarget;
         }}
         onDragOver={ (e) => {
             e.preventDefault();
-            e.dataTransfer.dropEffect = dropTarget ? 'move' : 'none';
+            e.dataTransfer.dropEffect = dragTarget ? 'move' : 'none';
         }}
         onDragEnd={ () => {
-            if (dropTarget) {
-                props.onClick({ x: Number(dropTarget.dataset.x), y: Number(dropTarget.dataset.y) });
+            if (dragTarget && dragTarget.classList.contains('tileValid')) {
+                props.onClick({ x: Number(dragTarget.dataset.x), y: Number(dragTarget.dataset.y) });
             }
-            dropTarget = undefined;
+            dragTarget = undefined;
+        } }
+
+        onTouchStart={ props.isClickable ? () => {
+            touchTarget = undefined;
+            props.onClick(props.coordinates);
+        } : undefined }
+        onTouchMove={ (e) => {
+            touchTarget = e as unknown as TouchEvent;
+        }}
+        onTouchEnd={ () => {
+            if (!touchTarget) {
+                return;
+            }
+            const targetTile = document.elementFromPoint(touchTarget.changedTouches[0].pageX, touchTarget.changedTouches[0].pageY) as HTMLElement;
+            if (targetTile && targetTile.classList.contains('tileValid')) {
+                props.onClick({ x: Number(targetTile.dataset.x), y: Number(targetTile.dataset.y) });
+            }
+            touchTarget = undefined;
         } }
     />
 );
