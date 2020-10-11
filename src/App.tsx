@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import './App.css';
 import { Board, GameStep } from './Board';
 import { createAI, Computer, ComputerSmartness } from './computer/ComputerUtils';
-import { Configuration } from './Configuration';
 import { Toolbar } from './Toolbar';
-import { References } from "./References";
+import {Options} from "./Options";
 
 const defaultDelay = 500;
 const defaultWhiteComputer = ComputerSmartness.NONE;
@@ -19,6 +18,7 @@ const App: React.FC = () => {
     const [delay, setDelay] = useState(defaultDelay);
     const [gameNumber, restart] = useState(1);
     const [gameStep, gameStepChange] = useState(defaultGameStep);
+    const [showOptionsModal, toggleOptionsModal] = useState(true);
 
     const [whiteComputerStr, setWhiteComputer] = useState<ComputerSmartness>(defaultWhiteComputer);
     const [blackComputerStr, setBlackComputer] = useState<ComputerSmartness>(defaultBlackComputer);
@@ -26,12 +26,16 @@ const App: React.FC = () => {
     const changeWhiteComputer = (smartness: ComputerSmartness) => {
         whiteComputer = createAI(smartness);
         setWhiteComputer(smartness);
-    }
+    };
 
     const changeBlackComputer = (smartness: ComputerSmartness) => {
         blackComputer = createAI(smartness);
         setBlackComputer(smartness);
-    }
+    };
+
+    const changeComputerDelay = (delay: number) => {
+        setDelay(delay);
+    };
 
     const restartGame = () => {
         whiteComputer = createAI(whiteComputerStr);
@@ -41,32 +45,40 @@ const App: React.FC = () => {
     }
 
     return <>
-        <h2>Game of the Amazons</h2>
-
-        <Board
-            blackComputer={blackComputer}
-            whiteComputer={whiteComputer}
-            computerDelay={delay}
-            gameStep={gameStep}
-            onGameStepChange={gameStepChange}
-            key={gameNumber}
-        />
-
-        <div className='buttonsAndLinks'>
-            <Toolbar onRestartClick={restartGame} gameStep={gameStep}/>
-            <Configuration
-                defaultWhiteAI={whiteComputerStr} onChangeWhiteAI={changeWhiteComputer}
-                defaultBlackAI={blackComputerStr} onChangeBlackAI={changeBlackComputer}
-                defaultDelay={defaultDelay}
-                onDelayChange={setDelay}
-            />
-            <References />
+        <div className='heading'>
+            <h2><a href='https://en.wikipedia.org/wiki/Game_of_the_Amazons' target='_blank' rel='noopener noreferrer'>The Game of the Amazons</a></h2>
         </div>
+
+        <div style={{ display: "inline-block", margin: '0 auto' }}>
+            <Board
+                blackComputer={blackComputer}
+                whiteComputer={whiteComputer}
+                computerDelay={delay}
+                gameStep={gameStep}
+                onGameStepChange={gameStepChange}
+                key={gameNumber}
+            />
+
+            <Toolbar
+                gameStep={gameStep}
+                onOptionsClick={() => toggleOptionsModal(!showOptionsModal)}
+                onRestartClick={restartGame}
+            />
+        </div>
+
+        { showOptionsModal &&
+        <Options
+           defaultWhiteAI={whiteComputerStr} onChangeWhiteAI={changeWhiteComputer}
+           defaultBlackAI={blackComputerStr} onChangeBlackAI={changeBlackComputer}
+           defaultDelay={defaultDelay}
+           onDelayChange={changeComputerDelay}
+           onClose={ () => toggleOptionsModal(false) }/> }
     </>;
 }
 
-((window as any).onresize = () => {
-    document.getElementsByTagName('body')[0].classList[window.innerWidth > window.innerHeight ? 'add' : 'remove']('landscape');
+// Responsive design JS hacks
+((window as Window).onresize = () => {
+    document.getElementsByTagName('body')[0].classList[window.innerWidth + 165 > window.innerHeight ? 'add' : 'remove']('landscape');
 })();
 
 export { App };

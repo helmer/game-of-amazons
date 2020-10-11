@@ -4,6 +4,7 @@ import { GameStep } from './Board';
 
 interface ToolbarProps {
     gameStep: GameStep;
+    onOptionsClick: () => void;
     onRestartClick: () => void;
 }
 
@@ -29,14 +30,15 @@ const gameStepToString = {
     [GameStep.BLACK_WON]:             'won',
 }
 
-const Toolbar: React.FC<ToolbarProps> = (props) => <>
-    <div className='gameStepContainer'>
-        <div className='gameStepWrap'>
-            <div className={ 'gameStep ' + gameStepToClassname[props.gameStep] }> </div>
-            <span>{ gameStepToString[props.gameStep] }</span>
+export const Toolbar: React.FC<ToolbarProps> = (p) => {
+    return <>
+        <div className='toolbar'>
+            <div className='gameStepContainer'>
+                <div className={'gameStep ' + gameStepToClassname[p.gameStep]} />
+                <span>{gameStepToString[p.gameStep]}</span>
+            </div>
+            <button className='toolbarButton' onClick={ p.onRestartClick }>Restart</button>
+            <button className='toolbarButton' onClick={ p.onOptionsClick }>Options</button>
         </div>
-        <button className='toolbarButton' onClick={props.onRestartClick}>Restart</button>
-    </div>
-</>;
-
-export { Toolbar };
+    </>;
+};

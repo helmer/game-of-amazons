@@ -26,7 +26,7 @@ interface TileProps {
 }
 
 const stateToClassname = {
-    [BoardTileState.FREE]:        'tileFree',
+    [BoardTileState.FREE]:        '',
     [BoardTileState.WHITE_QUEEN]: 'tileWhiteQueen',
     [BoardTileState.WHITE_BOW]:   'tileWhiteBow',
     [BoardTileState.WHITE_ARROW]: 'tileWhiteArrow',
